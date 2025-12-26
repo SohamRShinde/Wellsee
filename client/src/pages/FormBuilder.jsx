@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom"
 
 export default function FormBuilder() {
   const { eventId } = useParams()
-
   const [title, setTitle] = useState("")
   const [fields, setFields] = useState([
     { id: nanoid(), type: "text", label: "", placeholder: "", required: false }
