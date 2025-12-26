@@ -30,7 +30,7 @@ const registerUser = async (req, res) => {
         
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        const verificationToken = jwt.sign({ email }, process.env.JWT_SECRET, {
+        const verificationToken = jwt.sign({ email }, process.env.JWT_EMAIL_SECRET, {
             expiresIn: "1d"
         })
 
@@ -66,12 +66,12 @@ const registerUser = async (req, res) => {
 
 const emailVerifyToken = async (req, res) => {
     try {
-        const decoded = jwt.verify(req.params.token, process.env.JWT_SECRET)
+        const decoded = jwt.verify(req.params.token, process.env.JWT_EMAIL_SECRET)
         const user = await User.findOne({ email: decoded.email })
 
         if(!user)
             return res.status(400).send("Invalid verification token.")
-        console.log(user.verified)
+        
         if(user.verified){
             return res.send("Email already verified.")
         }
@@ -122,7 +122,7 @@ const loginUser = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
-        res.json({ user: { _id: user._id, name: user.name, email: user.email }})
+        res.json({ user: { _id: user._id, name: user.name, email: user.email, role: user.role }})
     } catch (error) {
         console.error("Login error:", error)
         res.status(500).json({error: "Server error during login."})
@@ -130,13 +130,13 @@ const loginUser = async (req, res) => {
 }
 
 const logoutUser = (req, res) => {
-    res.clearCookie("accesssToken")
+    res.clearCookie("accessToken")
     res.clearCookie("refreshToken")
     res.json({ message: "Logged out"})
 }
 
 const getMe = (req, res) => {
-    const token = req.cookies.accesToken
+    const token = req.cookies.accessToken
     if(!token) return res.status(401).json({ message: "No token"})
 
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err) => {
@@ -144,7 +144,7 @@ const getMe = (req, res) => {
     })
     email = decoded.email
     const user = findOne({ email })
-    frontendUser = { _id: user._id, name: user.name, email: user.email }
+    frontendUser = { _id: user._id, name: user.name, email: user.email, role: user.role }
     res.json(frontendUser)
 }
 
