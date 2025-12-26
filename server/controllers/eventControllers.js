@@ -1,4 +1,5 @@
 import Event from "../models/Events.js";
+import Form from "../models/Form.js"
 
 const createEvent = async (req, res) => {
     const { title, date, venue, description, banner, creator } = req.body;
@@ -72,19 +73,26 @@ const pastEvents = async (req, res) => {
 }
 
 const saveForm = async (req, res) => {
-    const { eventId, title, fields } = req.body;
+    try {
+        const { eventId, title, fields } = req.body;
 
-    const newForm = await Form.create({
-        eventId,
-        title,
-        fields
-    });
+        const newForm = await Form.create({
+            eventId,
+            title,
+            fields
+        });
 
-    await Event.findByIdAndUpdate(eventId, { 
-        formId: newForm._id 
-    });
+        await Event.findByIdAndUpdate(eventId, { 
+            formId: newForm._id 
+        });
 
-    res.status(201).json(newForm);
+        res.status(201).json(newForm);
+    } catch (error) {
+        console.error("Error saving form:", error);
+
+        res.status(500).json({ message: "Server error", error: error.message})
+    }
+    
 }
 
 export{
