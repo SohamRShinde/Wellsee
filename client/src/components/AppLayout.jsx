@@ -23,7 +23,7 @@ export default function AppLayout() {
             />
 
             {/* Main Content Area */}
-            <main className="p-4 pt-10">
+            <main>
                 {/* The Outlet is where your routed pages (Home, Profile, etc.) render */}
                 <Outlet />
             </main>

@@ -3,11 +3,9 @@ import axios from "axios"
 
 export default function LandingPage() {
     const [expanded, setExpanded] = useState(null)
-
     const [upcomingEvents, setUpcomingEvents] = useState([])
     const [pastEvents, setPastEvents] = useState([])
-
-    const[page, setPage] = useState(1)
+    const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(false)
     const [loadingPast, setLoadingPast] = useState(false)
 
@@ -31,13 +29,11 @@ export default function LandingPage() {
         setLoadingPast(true)
         try {
             const res = await axios.get(`/api/events/past?page=${pageNum}`)
-            console.log(res)
             if (reset) {
                 setPastEvents(res.data.events)
             } else {
                 setPastEvents(prev => [...prev, ...res.data.events])
             }
-
             setHasMore(res.data.hasMore)
             setPage(pageNum)
         } catch (error) {
@@ -48,44 +44,46 @@ export default function LandingPage() {
     }
   
     return (
-        <div className="min-h-screen bg-gray-950 text-blue-100">
-            {/* HERO */}
-            <section className="text-center py-8 bg-gradient-to-r from-blue-900 to-blue-700">
-                <h1 className="text-4xl font-bold mb-3 text-blue-100">Discover Campus Events</h1>
-                <p className="text-blue-300 text-lg">Join, participate, and connect with your community</p>
-            </section>
+        // 1. min-h-screen ensures it takes full window height
+        // 2. flex flex-col allows us to push the footer down
+        // 3. pt-20 adds space for your fixed Navbar
+        <div className="min-h-screen flex flex-col bg-gray-950 text-blue-100 pt-20">
+            
+            {/* Main content wrapper with flex-grow to push footer down */}
+            <main className="flex-grow">
+                
+                {/* UPCOMING EVENTS */}
+                <EventSection
+                    title="Upcoming Events"
+                    events={upcomingEvents}
+                    expanded={expanded}
+                    setExpanded={setExpanded}
+                />
 
-            {/* UPCOMING EVENTS */}
-            <EventSection
-                title="Upcoming Events"
-                events={upcomingEvents}
-                expanded={expanded}
-                setExpanded={setExpanded}
-            />
+                {/* PAST EVENTS */}
+                <EventSection
+                    title="Past Events"
+                    events={pastEvents}
+                    expanded={expanded}
+                    setExpanded={setExpanded}
+                    isPast
+                />
 
-            {/* PAST EVENTS */}
-            <EventSection
-                title="Past Events"
-                events={pastEvents}
-                expanded={expanded}
-                setExpanded={setExpanded}
-                isPast
-            />
-
-            {hasMore && (
-                <div className="flex justaify-center pb-12">
-                    <button
-                        onClick={() => loadingPastEvents(page + 1)}
-                        disabled={loadingPast}
-                        className="px-6 py-2 bg-transparent border border-blue-500 text-blue-300 rounded hover:bg-blue-900 transition-colors disabled:opacity-50"
-                    >
-                        {loadingPast ? "Loading..." : "Load More"}
-                    </button>
-                </div>
-            )}
+                {hasMore && (
+                    <div className="flex justify-center pb-12">
+                        <button
+                            onClick={() => loadingPastEvents(page + 1)}
+                            disabled={loadingPast}
+                            className="px-6 py-2 bg-transparent border border-blue-500 text-blue-300 rounded hover:bg-blue-900 transition-colors disabled:opacity-50"
+                        >
+                            {loadingPast ? "Loading..." : "Load More"}
+                        </button>
+                    </div>
+                )}
+            </main>
 
             {/* FOOTER */}
-            <footer className="bg-blue-900 text-center py-4 border-t border-blue-800 text-blue-300">
+            <footer className="bg-blue-900 text-center py-4 border-t border-blue-800 text-blue-300 mt-auto">
                 © 2025 Wellsee — All rights reserved.
             </footer>
         </div>
@@ -94,7 +92,6 @@ export default function LandingPage() {
 
 function EventSection({ title, events, expanded, setExpanded, isPast }) {
     
-    // Helper to format dates
     const formatDate = (isoDate) => {
         if (!isoDate) return "Date TBD";
         return new Date(isoDate).toLocaleDateString("en-US", {
@@ -105,30 +102,25 @@ function EventSection({ title, events, expanded, setExpanded, isPast }) {
     if (!events || events.length === 0) return null;
 
     return (
-        <section className="py-12 px-6">
-            <h2 className="text-2xl font-bold text-blue-300 mb-8 text-center">{title}</h2>
+        <section className="py-8 px-6">
+            <h2 className="text-2xl font-bold text-blue-300 mb-6 text-center">{title}</h2>
 
-            <div className="flex flex-col gap-3 justify-center items-center"> 
+            <div className="flex flex-col gap-4 justify-center items-center"> 
                 {events.map((event) => {
-                    // 1. Force both IDs to be Strings for safe comparison
                     const isExpanded = String(expanded) === String(event._id);
 
                     return (
                         <div
                             key={event._id} 
-                            // 2. Remove 'overflow-hidden' temporarily to see if CSS is hiding it
-                            // Added 'h-auto' to ensure it grows
                             className="bg-gray-900 w-full max-w-2xl rounded-xl shadow-lg border border-blue-800 transition-all duration-300 cursor-pointer h-auto"
-                            
                             onClick={() => setExpanded(isExpanded ? null : event._id)}
                         >
                             <img
                                 src={event.banner}
                                 alt={event.title}
-                                className={`w-full h-36 object-cover ${isPast ? "opacity-60" : ""}`}
+                                className={`w-full h-36 object-cover rounded-t-xl ${isPast ? "opacity-60" : ""}`}
                             />
 
-                            {/* 3. Use the safe 'isExpanded' boolean we calculated above */}
                             {isExpanded && (
                                 <div className="flex justify-between p-4 cursor-default border-t border-blue-800" onClick={(e) => e.stopPropagation()}>
                                     <div>
