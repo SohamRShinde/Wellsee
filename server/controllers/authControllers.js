@@ -102,10 +102,10 @@ const loginUser = async (req, res) => {
         if(!isMatch)
             return res.status(401).json({ message: "Invalid credentials"})
 
-        const accessToken = jwt.sign({ id: user._id, name: user.name, email: user.email, role: user.role}, process.env.JWT_ACCESS_SECRET, {
+        const accessToken = jwt.sign({ _id: user._id, name: user.name, email: user.email, role: user.role}, process.env.JWT_ACCESS_SECRET, {
             expiresIn: "15m"
         })
-        const refreshToken = jwt.sign({ id: user._id, name: user.name, email: user.email, role: user.role}, process.env.JWT_REFRESH_SECRET, {
+        const refreshToken = jwt.sign({ _id: user._id, name: user.name, email: user.email, role: user.role}, process.env.JWT_REFRESH_SECRET, {
             expiresIn: "7d"
         })
 
