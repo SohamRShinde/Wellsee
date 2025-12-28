@@ -5,6 +5,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import authRoutes from "./routes/authRoutes.js"
 import eventRoutes from "./routes/eventRoutes.js"
+import clubRoutes from "./routes/clubRoutes.js"
 
 dotenv.config()
 const app = express()
@@ -23,6 +24,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use("/", authRoutes)
 app.use("/api/events", eventRoutes)
+app.use('/api/clubs', clubRoutes)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
