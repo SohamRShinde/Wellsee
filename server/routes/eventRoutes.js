@@ -1,6 +1,6 @@
 import express from "express"
 import { createEvent, pastEvents, saveForm, upcomingEvents } from "../controllers/eventControllers.js";
-import { authenticate } from "../controllers/authMiddleware.js";
+import { authenticate } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
