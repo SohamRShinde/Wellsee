@@ -75,7 +75,7 @@ const emailVerifyToken = async (req, res) => {
         if(user.verified){
             return res.send("Email already verified.")
         }
-        console.log("deez")
+        
         user.verified = true
         user.verificationToken = null
         await user.save()
