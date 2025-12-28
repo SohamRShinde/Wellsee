@@ -106,7 +106,7 @@ export default function Register() {
                 className="select select-bordered w-full"
               >
                 <option value="student">Student</option>
-                <option value="committee">Club Admin</option>
+                <option value="club_admin">Club Admin</option>
               </select>
             </div>
 
