@@ -43,7 +43,7 @@ export const createClub = async (req, res) => {
 
 export const getClubs = async (req, res) => {
     try {
-        const clubs = await Club.find({}).select('name description logo')
+        const clubs = await Club.find({}).select('name description logo admin')
         res.status(200).json(clubs)
     } catch (error) {
         res.status(500).json({ message: error.message })
