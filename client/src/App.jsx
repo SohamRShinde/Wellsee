@@ -7,7 +7,7 @@ import FormBuilder from "./pages/FormBuilder"
 import LandingPage from './pages/LandingPage';
 import Register from './pages/Register';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import ClubDashboard from './pages/ClubDashboard';
 import CreateEvent from './pages/CreateEventForm';
 
 axios.defaults.baseURL = 'http://localhost:5000'
@@ -23,7 +23,7 @@ function App() {
         <Route element={<AppLayout/>}>
           <Route path='/' element={<LandingPage/>} />
           
-          <Route path='/dashboard' element={<Dashboard/>} />
+          <Route path='/dashboard' element={<ClubDashboard/>} />
           <Route path='/create-event' element={<CreateEvent/>} />
           <Route path='/events/:eventId/form' element={<FormBuilder/>} />
         </Route>
