@@ -6,7 +6,7 @@ export default function Sidebar({ isOpen, onToggle }) {
     const location = useLocation()
     const { user } = useContext(AuthContext)
 
-    const isCommittee = user?.role === "committee"
+    const isCLubAdmin = user?.role === "club_admin"
 
     const committees = [
         { id: 1, name: "Student Council" },
@@ -23,7 +23,7 @@ export default function Sidebar({ isOpen, onToggle }) {
             <ul className="menu w-full p-0 text-blue-200">
                 
                 {/* --- OPTION A: COMMITTEE VIEW --- */}
-                {isCommittee ? (
+                {isCLubAdmin ? (
                     <>
                         <li className="menu-title text-blue-500 uppercase text-xs font-bold tracking-wider mb-2">Management</li>
                         <li>
