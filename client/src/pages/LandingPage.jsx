@@ -44,10 +44,7 @@ export default function LandingPage() {
     }
   
     return (
-        // 1. min-h-screen ensures it takes full window height
-        // 2. flex flex-col allows us to push the footer down
-        // 3. pt-20 adds space for your fixed Navbar
-        <div className="min-h-screen flex flex-col bg-gray-950 text-blue-100 pt-20">
+        <div className="min-h-screen flex flex-col bg-gray-950 text-blue-100 ">
             
             {/* Main content wrapper with flex-grow to push footer down */}
             <main className="flex-grow">
