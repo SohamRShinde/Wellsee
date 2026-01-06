@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import axios from "axios"
+import api from "../api.js"
 
 export default function LandingPage() {
     const [expanded, setExpanded] = useState(null)
@@ -12,7 +12,7 @@ export default function LandingPage() {
     useEffect(() => {
         const fetchUpcoming = async () => {
             try {
-                const res = await axios.get('/api/events/upcoming')
+                const res = await api.get('/api/events/upcoming')
                 setUpcomingEvents(res.data)
             } catch (error) {
                 console.error("Failed to load upcoming events", error)
@@ -28,7 +28,7 @@ export default function LandingPage() {
     const loadingPastEvents = async (pageNum, reset = false) => {
         setLoadingPast(true)
         try {
-            const res = await axios.get(`/api/events/past?page=${pageNum}`)
+            const res = await api.get(`/api/events/past?page=${pageNum}`)
             if (reset) {
                 setPastEvents(res.data.events)
             } else {

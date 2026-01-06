@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import axios from "axios"
+import api from "../api.js"
 
 export default function Register() {
     const [data, setData] = useState({
@@ -22,7 +22,7 @@ export default function Register() {
         setLoading(true)
         const {name, email, password, role} = data
         try {
-            const res = await axios.post("/api/auth/register", {
+            const res = await api.post("/api/auth/register", {
                 name, email, password, role
             })
             alert(res.data.message)

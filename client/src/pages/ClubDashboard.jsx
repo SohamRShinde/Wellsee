@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react"
-import axios from "axios"
+import api from "../api.js"
 import { AuthContext } from "../AuthContext"
 import { Link } from "react-router-dom"
 
@@ -24,7 +24,7 @@ export default function ClubDashboard() {
         const fetchClubData = async () => {
             try {
                 // Fetch all clubs and find the one this user manages
-                const res = await axios.get("/api/clubs")
+                const res = await api.get("/api/clubs")
                 const myClub = res.data.find(c => c.admin === user?._id)
                 
                 if (myClub) {

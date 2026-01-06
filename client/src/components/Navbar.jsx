@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { useContext, useState } from "react"
 import { AuthContext } from "../AuthContext"
-import axios from "axios"
+import api from "../api.js"
 
 export default function Navbar({ onToggleSidebar }) {
     const location = useLocation()
@@ -22,7 +22,7 @@ export default function Navbar({ onToggleSidebar }) {
     const handleLogout = () => {
         setUser(null)
         navigate("/")
-        axios.post("/api/auth/logout")
+        api.post("/api/auth/logout")
             .then(res => console.log(res))
     }
 
