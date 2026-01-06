@@ -93,29 +93,6 @@ const pastEvents = async (req, res) => {
     }
 }
 
-// const saveForm = async (req, res) => {
-//     try {
-//         const { eventId, title, fields } = req.body;
-
-//         const newForm = await Form.create({
-//             eventId,
-//             title,
-//             fields
-//         });
-
-//         await Event.findByIdAndUpdate(eventId, { 
-//             formId: newForm._id 
-//         });
-
-//         res.status(201).json(newForm);
-//     } catch (error) {
-//         console.error("Error saving form:", error);
-
-//         res.status(500).json({ message: "Server error", error: error.message})
-//     }
-    
-// }
-
 const registerForEvent = async (req, res) => {
     try {
         const { eventId, formId, answers } = req.body;
