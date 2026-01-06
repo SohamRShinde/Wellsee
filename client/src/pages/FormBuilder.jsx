@@ -1,10 +1,20 @@
 import { useState, useRef, useEffect } from "react"
 import { nanoid } from "nanoid"
-import axios from 'axios'
-import { useParams } from "react-router-dom"
+import api from "../api.js"
+import { useLocation, useNavigate } from "react-router-dom"
 
 export default function FormBuilder() {
-  const { eventId } = useParams()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const eventData = location.state?.eventData
+
+  useEffect(() => {
+    if(!eventData){
+      alert("No event data found. Please create an event first.")
+      navigate('/create-event')
+    }
+  }, [eventData, navigate])
+
   const [title, setTitle] = useState("")
   const [fields, setFields] = useState([
     { id: nanoid(), type: "text", label: "", placeholder: "", required: false }
@@ -100,16 +110,17 @@ export default function FormBuilder() {
     setIsSaving(true)
 
     try {
-      const response = await axios.post("/api/events/saveForm", {
-        eventId: eventId,
-        title: title,
-        fields: fields
-      })
+      const payload = {
+        ...eventData,
+        formTitle: title,
+        formFields: fields
+      }
+      const response = await api.post("/api/events/create", payload)
 
       console.log("Success:", response.data)
       alert("Form saved successfully!")
 
-      // navigate(`/events/${eventId}`); might do ts
+      navigate('/dashboard')
     } catch (error) {
       console.error("Error saving form:", error)
       alert("Failed to save form. PLease try again.")

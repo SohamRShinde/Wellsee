@@ -1,20 +1,40 @@
 import Event from "../models/Events.js";
 import Form from "../models/Form.js"
+import Response from "../models/Response.js"
+import Club from "../models/Club.js"
+import mongoose from "mongoose";
 
-const createEvent = async (req, res) => {
-    const { title, date, venue, description, banner, creator } = req.body;
+const createEventWithForm = async (req, res) => {
+    const { 
+        title, date, venue, description, banner, 
+        formTitle, formFields
+    } = req.body;
 
-    if (!title || !date || !venue || !description || !banner) {
-        return res.status(400).json({ message: 'Please provide all required event details.' });
+    if (!title || !date || !venue || !description || !banner || !formFields) {
+        return res.status(400).json({ message: 'Please provide all required event and form details.' });
     }
 
     try {
 
-        if (!req.user || !req.user.id) {
+        if (!req.user || !req.user._id) {
             return res.status(401).json({ message: "Unauthorized: User not identified." });
         }
+        const club = await Club.findOne({ admin: req.user._id })
+        if(!club){
+            return res.status(403).json({ message: "You must be a Club Admin to create events."})
+        }
+        const eventId = new mongoose.Types.ObjectId();
+
+        const newForm = new Form({
+            eventId: eventId,
+            title: formTitle,
+            fields: formFields
+        })
 
         const newEvent = new Event({
+            _id: eventId,
+            club: club._id,
+            formId: newForm._id,
             title,
             date,
             venue,
@@ -23,16 +43,17 @@ const createEvent = async (req, res) => {
             creator: req.user.id
         });
 
-        const savedEvent = await newEvent.save();
+        await Promise.all([newForm.save(), newEvent.save()])
         
         res.status(201).json({ 
-            message: 'Event created successfully!',
-            event: savedEvent
+            message: 'Event and Form created successfully!',
+            event: newEvent,
+            form: newForm
         });
 
     } catch (error) {
-        console.error("Database Save Error:", error);
-        res.status(500).json({ message: 'Error saving event to database.', error: error.message });
+        console.error("Creation Error:", error);
+        res.status(500).json({ message: 'Error saving to database.', error: error.message });
     }
 }
 
@@ -72,32 +93,76 @@ const pastEvents = async (req, res) => {
     }
 }
 
-const saveForm = async (req, res) => {
-    try {
-        const { eventId, title, fields } = req.body;
+// const saveForm = async (req, res) => {
+//     try {
+//         const { eventId, title, fields } = req.body;
 
-        const newForm = await Form.create({
-            eventId,
-            title,
-            fields
-        });
+//         const newForm = await Form.create({
+//             eventId,
+//             title,
+//             fields
+//         });
 
-        await Event.findByIdAndUpdate(eventId, { 
-            formId: newForm._id 
-        });
+//         await Event.findByIdAndUpdate(eventId, { 
+//             formId: newForm._id 
+//         });
 
-        res.status(201).json(newForm);
-    } catch (error) {
-        console.error("Error saving form:", error);
+//         res.status(201).json(newForm);
+//     } catch (error) {
+//         console.error("Error saving form:", error);
 
-        res.status(500).json({ message: "Server error", error: error.message})
-    }
+//         res.status(500).json({ message: "Server error", error: error.message})
+//     }
     
+// }
+
+const registerForEvent = async (req, res) => {
+    try {
+        const { eventId, formId, answers } = req.body;
+        const userId = req.user.id;
+
+        const existingResponse =  await Response.findOne({ formId, userId })
+        if(existingResponse) {
+            return res.status(400).json({ message: "You have already registered for this event."})
+        }
+
+        const response = await Response.create({
+            formId,
+            userId,
+            answers
+        })
+        //TODO
+        // await Event.findByIdAndUpdate(eventId, { $push: { registrants: userId } })
+        
+        res.status(201).json({ message: "Registration successful!" })
+    } catch (error) {
+        res.status(500).json({ message: "Registration failed", error: error.message})
+    }
+}
+
+const getEventParticipants = async (req, res) => {
+    try {
+        const { eventId } = req.params
+
+        const event = await Event.findById(eventId)
+        if(!event || !event.formId) {
+            return res.status(404).json({ message: "Event or Form not found" })
+        }
+
+        const responses = await Response.find({ formId: event.formId })
+            .populate('userId', 'name email')
+            .sort({ createdAt: -1 })
+        
+        res.status(200).json(responses)
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching participants", error: error.message })
+    }
 }
 
 export{
-    createEvent,
+    createEventWithForm,
     upcomingEvents,
     pastEvents,
-    saveForm,
+    registerForEvent,
+    getEventParticipants
 }

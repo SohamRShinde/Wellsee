@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from "../api.js"
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 
@@ -35,7 +35,7 @@ export default function CreateEventForm() {
         data.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
         
         try {
-            const response = await axios.post(
+            const response = await api.post(
                 CLOUDINARY_UPLOAD_URL, 
                 data,
                 {
@@ -70,7 +70,7 @@ export default function CreateEventForm() {
                 return;
             }
 
-            const finalEventData = {
+            const eventDataToPass = {
                 title: formData.title,
                 date: formData.date,
                 venue: formData.venue,
@@ -78,18 +78,19 @@ export default function CreateEventForm() {
                 banner: bannerUrl,
             };
 
-            const response = await axios.post('/api/events/create', finalEventData);
+            // const response = await api.post('/api/events/create', finalEventData);
 
-            const newEventId = response.data.event._id
+            // const newEventId = response.data.event._id
+            console.log("Passing data to form builder:", eventDataToPass)
 
             alert('Event created successfully! Redirecting to Form Builder...');
 
             setFormData({ title: '', date: '', venue: '', description: '', banner: null }); 
-            navigate(`/events/${newEventId}/form`)
+            navigate('/create-event/form', { state: { eventData: eventDataToPass } })
 
         } catch (error) {
-            console.error("Event Creation Error:", error);
-            alert('Failed to create event. See console for details.');
+            console.error("Error preparing event data:", error);
+            alert('Something went wrong. Please try again.');
         } finally {
             setLoading(false);
         }
