@@ -103,7 +103,7 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials"})
 
         const accessToken = jwt.sign({ _id: user._id, name: user.name, email: user.email, role: user.role}, process.env.JWT_ACCESS_SECRET, {
-            expiresIn: "1m"
+            expiresIn: "15m"
         })
         const refreshToken = jwt.sign({ _id: user._id, name: user.name, email: user.email, role: user.role}, process.env.JWT_REFRESH_SECRET, {
             expiresIn: "7d"
@@ -154,7 +154,6 @@ const refreshToken = (req, res) => {
     
     jwt.verify(token, process.env.JWT_REFRESH_SECRET, (err, user) => {
         if(err) return res.status(403).json({ message: "Invalid refresh token"})
-        console.log(user)
         const newPayload = { 
             _id: user._id, 
             name: user.name, 
