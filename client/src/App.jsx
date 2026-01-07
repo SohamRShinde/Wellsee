@@ -6,6 +6,7 @@ import LandingPage from './pages/LandingPage';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import ClubDashboard from './pages/ClubDashboard';
+import EditClub from './pages/EditClub';
 import CreateEvent from './pages/CreateEventForm';
 
 
@@ -20,6 +21,7 @@ function App() {
           <Route path='/' element={<LandingPage/>} />
           
           <Route path='/dashboard' element={<ClubDashboard/>} />
+          <Route path='/edit-club/:clubId' element={<EditClub/>} />
           <Route path='/create-event' element={<CreateEvent/>} />
           <Route path='/create-event/form' element={<FormBuilder/>} />
         </Route>
