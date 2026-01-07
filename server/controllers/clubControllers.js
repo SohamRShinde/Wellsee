@@ -53,6 +53,7 @@ export const getClubs = async (req, res) => {
 export const updateClub = async (req, res) => {
     try {
         const club = await Club.findById(req.params.id)
+        const { name, description, logo } = req.body;
 
         if(!club) {
             return res.status(404).json({ message: 'Club not found'})
@@ -66,9 +67,13 @@ export const updateClub = async (req, res) => {
         club.description = req.body.description || club.description
         club.logo = req.body.logo || club.logo
 
-        const updatedClub = await club.save()
+        const updatedClub = await Club.findByIdAndUpdate(
+            req.params.id, 
+            { name, description, logo }, 
+            { new: true } 
+        );
         res.status(200).json(updatedClub)
     } catch (error) {
-        
+        res.status(500).json({ error: error.message });
     }
 }
