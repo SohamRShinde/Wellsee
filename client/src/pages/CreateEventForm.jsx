@@ -98,7 +98,7 @@ export default function CreateEventForm() {
 
     return (
         <div className="max-w-xl mx-auto p-8 bg-gray-800 rounded-xl shadow-2xl mt-10">
-            <h2 className="text-3xl font-extrabold text-blue-400 mb-8 text-center">Create New Event</h2>
+            <h2 className="text-3xl font-bold text-blue-400 mb-8 text-center">Create New Event</h2>
             
             <form onSubmit={handleSubmit} className="space-y-6">
                 
@@ -111,7 +111,7 @@ export default function CreateEventForm() {
                         value={formData.title}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-600  shadow-sm bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     />
                 </div>
 
@@ -125,7 +125,7 @@ export default function CreateEventForm() {
                             value={formData.date}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-600  shadow-sm bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
                     <div>
@@ -137,7 +137,7 @@ export default function CreateEventForm() {
                             value={formData.venue}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-600  shadow-sm bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
                 </div>
@@ -150,7 +150,7 @@ export default function CreateEventForm() {
                         rows="4"
                         value={formData.description}
                         onChange={handleChange}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-600  shadow-sm bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     ></textarea>
                 </div>
 
