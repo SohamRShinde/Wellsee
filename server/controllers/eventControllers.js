@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 
 const createEventWithForm = async (req, res) => {
     const { 
-        title, date, venue, description, banner, 
+        title, date, venue, description, banner, notify,
         formTitle, formFields
     } = req.body;
 
@@ -45,8 +45,22 @@ const createEventWithForm = async (req, res) => {
 
         await Promise.all([newForm.save(), newEvent.save()])
         
+        if(notify === true){
+            const students = await User.find({ role: 'student' }).select('_id')
+
+            if (students.length > 0){
+                const notifications = students.map(student => ({
+                    userId: student._id,
+                    title: `New Event: ${title}`,
+                    message: `Check out ${title} happening on ${new Date(date).toDateString()}! Register now.`,
+                    type: 'announcement'
+                }))
+                await Notification.insertMany(notifications)
+            }
+        }
+
         res.status(201).json({ 
-            message: 'Event and Form created successfully!',
+            message: notify ? 'Event created and students notifed!' : 'Event created successfully!',
             event: newEvent,
             form: newForm
         });
