@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("Connected to Database"))
 .catch((err) => console.error("Failed to Connect to Database\n", err))
 
-app.use("/", authRoutes)
+app.use("/api/auth", authRoutes)
 app.use("/api/events", eventRoutes)
 app.use('/api/clubs', clubRoutes)
 

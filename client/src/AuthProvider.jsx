@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
 
   
   useEffect(() => {
-    axios.get("/me")
+    axios.get("/api/auth/me")
       .then(res => setUser(res.data.user))
       .catch((err) => {setUser(null); console.log(err.response?.data?.message);}
       )
