@@ -1,16 +1,12 @@
-import { useLocation, useNavigate } from "react-router-dom"
+import {  useNavigate } from "react-router-dom"
 import { useContext, useState } from "react"
 import { AuthContext } from "../AuthContext"
 import api from "../api.js"
 
 export default function Navbar({ onToggleSidebar }) {
-    const location = useLocation()
     const navigate = useNavigate()
     const { user, setUser } = useContext(AuthContext)
     const [search, setSearch] = useState("")
-    const hiddenPaths = ["/form"]
-
-    if (hiddenPaths.includes(location.pathname)) return null
 
     const handleSearch = (e) => {
         e.preventDefault()
