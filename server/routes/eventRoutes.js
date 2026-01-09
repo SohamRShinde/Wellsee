@@ -14,7 +14,7 @@ const router = express.Router();
 router.post('/create', authenticate, createEventWithForm);
 router.get('/upcoming', upcomingEvents)
 router.get('/past', pastEvents)
-router.post('/:id/register', authenticate, registerForEvent)
+router.post('/register', authenticate, registerForEvent)
 router.get('/:eventId/participants', authenticate, getEventParticipants)
 
 export default router
