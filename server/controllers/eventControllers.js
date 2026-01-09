@@ -40,7 +40,7 @@ const createEventWithForm = async (req, res) => {
             venue,
             description,
             banner, 
-            creator: req.user.id
+            creator: req.user._id
         });
 
         await Promise.all([newForm.save(), newEvent.save()])
@@ -96,7 +96,7 @@ const pastEvents = async (req, res) => {
 const registerForEvent = async (req, res) => {
     try {
         const { eventId, formId, answers } = req.body;
-        const userId = req.user.id;
+        const userId = req.user._id;
 
         const existingResponse =  await Response.findOne({ formId, userId })
         if(existingResponse) {
