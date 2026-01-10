@@ -30,7 +30,11 @@ export default function Login() {
       });
       navigate('/');
     } catch (error) {
-      alert(error.response?.data?.error || "Login failed");
+      alert(
+        error.response?.data?.message ||
+        error.response?.data?.error || 
+        "Login failed"
+      );
       console.log(error);
     } finally {
       setLoading(false);

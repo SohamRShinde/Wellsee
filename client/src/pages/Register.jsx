@@ -27,7 +27,11 @@ export default function Register() {
             })
             alert(res.data.message)
         } catch (error) {
-            alert(error.response?.data?.message || "Registration failed. Please try again.")
+            alert(
+              error.respone?.data?.message ||
+              error.response?.data?.message || 
+              "Registration failed. Please try again."
+            )
         } finally {
             setLoading(false)
         }
