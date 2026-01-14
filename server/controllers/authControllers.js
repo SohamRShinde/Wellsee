@@ -135,17 +135,31 @@ const logoutUser = (req, res) => {
     res.json({ message: "Logged out"})
 }
 
-const getMe = (req, res) => {
+const getMe = async (req, res) => {
     const token = req.cookies.accessToken
     if(!token) return res.status(401).json({ message: "No token"})
+    
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
 
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err) => {
-        if (err) return res.status(403).json({ message: "Invalid token" })
-    })
-    email = decoded.email
-    const user = findOne({ email })
-    frontendUser = { _id: user._id, name: user.name, email: user.email, role: user.role }
-    res.json(frontendUser)
+        const user = await User.findById(decoded._id)
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const frontendUser = { 
+            _id: user._id, 
+            name: user.name, 
+            email: user.email, 
+            role: user.role 
+        }
+
+        res.status(200).json(frontendUser)
+    } catch (error) {
+        console.error("Error in getMe:", error);
+        return res.status(403).json({ message: "Invalid token" });
+    }
 }
 
 const refreshToken = (req, res) => {
