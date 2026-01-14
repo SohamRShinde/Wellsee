@@ -15,6 +15,7 @@ export default function CreateEventForm() {
         venue: '',
         description: '',
         banner: null, 
+        notify: false
     });
     const [loading, setLoading] = useState(false);
 
@@ -76,6 +77,7 @@ export default function CreateEventForm() {
                 venue: formData.venue,
                 description: formData.description,
                 banner: bannerUrl,
+                notify: formData.notify,
             };
 
             // const response = await api.post('/api/events/create', finalEventData);
@@ -165,6 +167,20 @@ export default function CreateEventForm() {
                         required
                         className="mt-1 block w-full text-sm text-blue-100 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
                     />
+                </div>
+
+                <div className='flex items-center mb-4'>
+                    <input
+                        id="notify"
+                        name="notify"
+                        type="checkbox"
+                        checked={formData.notify}
+                        onChange={(e) => setFormData(prev => ({ ...prev, notify: e.target.checked}))}
+                        className='h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-600 rounded bg-gray-700'
+                    />
+                    <label htmlFor='notify' className="ml-3 block text-sm font-medium text-blue-200">
+                        Notify students on creation?(You can do this later from the dashboard)
+                    </label>
                 </div>
 
                 <button
