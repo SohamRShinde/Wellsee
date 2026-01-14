@@ -7,28 +7,34 @@ export default function ClubDashboard() {
     const { user } = useContext(AuthContext)
     const [club, setClub] = useState(null)
     const [loading, setLoading] = useState(true)
-
-    // Mock data for UI demonstration (Replace with real API calls later)
     const [events, setEvents] = useState({
-        upcoming: [
-            { _id: "1", title: "Intro to React Workshop", date: "2025-11-10", registrants: 45 },
-            { _id: "2", title: "Hackathon Prep Session", date: "2025-11-15", registrants: 12 },
-        ],
-        past: [
-            { _id: "3", title: "AI Seminar 2024", date: "2025-10-01", mediaCount: 0 },
-            { _id: "4", title: "Freshers Coding Contest", date: "2025-09-15", mediaCount: 5 },
-        ]
+        upcoming: [],
+        past: []
     })
 
     useEffect(() => {
         const fetchClubData = async () => {
             try {
-                // Fetch all clubs and find the one this user manages
                 const res = await api.get("/api/clubs")
                 const myClub = res.data.find(c => c.admin === user?._id)
                 
                 if (myClub) {
                     setClub(myClub)
+
+                    const [upcomingRes, pastRes] = await Promise.all([
+                        api.get("/api/events/upcoming"),
+                        api.get("/api/events/past")
+                    ])
+                    const myUpcoming = upcomingRes.data.filter(e => e.club === myClub._id)
+                    console.log(myUpcoming)
+                    const myPast = pastRes.data.events.filter(e => e.club === myClub._id)
+
+                    
+
+                    setEvents({
+                        upcoming: myUpcoming,
+                        past: myPast
+                    })
                 }
             } catch (error) {
                 console.error("Failed to load club data", error)
@@ -39,6 +45,18 @@ export default function ClubDashboard() {
 
         if (user) fetchClubData()
     }, [user])
+    console.log(events.upcoming.length)
+
+    const handleAnnounce = async (eventId) => {
+        if(!confirm("Send notification to ALL students about this event?")) return
+
+        try {
+            const res = await api.post('api/notifications/new-event', { eventId })
+            alert(res.data.message)
+        } catch (error) {
+            alert(error.response?.data?.message || "Failed to send announcement")
+        }
+    }
 
     if (loading) return <div className="text-center text-blue-300 mt-20">Loading Dashboard...</div>
     
@@ -97,7 +115,9 @@ export default function ClubDashboard() {
                                         <p className="text-blue-400 text-sm mt-1">{new Date(event.date).toLocaleDateString()}</p>
                                     </div>
                                     <div className="bg-blue-950 px-3 py-1 rounded border border-blue-900">
-                                        <span className="text-xl font-bold text-blue-200">{event.registrants}</span>
+                                        <span className="text-xl font-bold text-blue-200">
+                                            {event.registrants?.length || 0} 
+                                        </span>
                                         <span className="text-xs text-blue-500 ml-1">Regs</span>
                                     </div>
                                 </div>
@@ -109,6 +129,17 @@ export default function ClubDashboard() {
                                     >
                                         View Registrants
                                     </Link>
+
+                                    <button
+                                        onClick={() => handleAnnounce(event._id)}
+                                        className="px-3 py-2 text-blue-400 hover:text-white hover:bg-blue-900 rounded-lg transition"
+                                        title="Announce to All Students"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                                        </svg>
+                                    </button>
+
                                     <button className="px-3 py-2 text-blue-400 hover:text-white hover:bg-blue-900 rounded-lg transition">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                     </button>
